@@ -70,6 +70,11 @@ class JukeboxApp:
         self.track_view.btn_detail.config(command=self.show_selected_detail)
         self.track_view.btn_add_fav.config(command=lambda: self.track_controller.add_to_favorite(self.track_list.get_tracks()[self.track_view.get_listbox().curselection()[0]]))
 
+        # Bind button in playlist view
+        self.track_list_view.create_playlist_btn.config(command=self.create_playlist_callback)
+        self.track_list_view.add_track_btn.config(command=self.add_track_popup_callback)
+        self.track_list_view.playlist_listbox.bind('<<ListboxSelect>>', self.on_playlist_select)
+
     def display_tracks(self):
         self.track_view.get_listbox().delete(0, tk.END)
         for track in self.track_list.get_tracks():
@@ -83,6 +88,36 @@ class JukeboxApp:
             self.track_controller.show_detail(selected_track)
         else:
             self.track_view.show_message("Please select a track first.")
+
+    def create_playlist_callback(self):
+        title = self.track_list_view.playlist_name_entry.get()
+        self.track_list_controller.create_playlist(title)
+        self.track_list_view.playlist_name_entry.delete(0, 'end')
+
+    def add_track_popup_callback(self):
+        # Lấy index playlist đang chọn
+        playlist_index = self.track_list_view.playlist_listbox.curselection()
+        if not playlist_index:
+            self.track_list_view.show_message("Please select a playlist first!")
+            return
+        playlist_index = playlist_index[0]
+        # Lấy danh sách track (ở đây dùng default_tracks, bạn có thể thay bằng lấy từ DB)
+        all_tracks = self.default_tracks
+        self.track_list_controller.show_add_track_popup(all_tracks, playlist_index)
+
+    def on_playlist_select(self, event):
+        selection = self.track_list_view.playlist_listbox.curselection()
+        if not selection:
+            self.track_list_view.tracks_listbox.delete(0, 'end')
+            return
+        playlist_index = selection[0]
+        from Models.track_list import TrackList
+        playlists = TrackList.get_all_playlists()
+        if 0 <= playlist_index < len(playlists):
+            playlist = playlists[playlist_index]
+            self.track_list_controller.update_tracks_listbox(playlist)
+        else:
+            self.track_list_view.tracks_listbox.delete(0, 'end')
 
 if __name__ == "__main__":
     root = tk.Tk()
