@@ -1,0 +1,46 @@
+import mysql.connector
+
+DB_CONFIG = {
+    'user': 'root',
+    'password': '',
+    'host': 'localhost',
+    'database': 'jukebox'
+}
+
+def connect():
+    return mysql.connector.connect(**DB_CONFIG)
+
+def add_favorite(track_id):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO favorites (track_id)
+        VALUES (%s)
+    ''', (track_id,))
+    conn.commit()
+    conn.close()
+
+def get_all_favorites():
+    conn = connect()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('''
+        SELECT t.* FROM tracks t
+        JOIN favorites f ON t.track_id = f.track_id
+    ''')
+    result = cursor.fetchall()
+    conn.close()
+    return result
+
+def remove_favorite(track_id):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM favorites WHERE track_id = %s', (track_id,))
+    conn.commit()
+    conn.close()
+
+def clear_all_favorites():
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM favorites')
+    conn.commit()
+    conn.close()

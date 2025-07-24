@@ -22,11 +22,20 @@ class TrackController:
         self.view.display_track_info(self.model)
 
     def show_detail(self, track):
-        detail = (
-            f"ID: {track.track_id}\n"
-            f"Title: {track.track_title}\n"
-            f"Artist: {track.artist}\n"
-            f"Rating: {track.track_rating}\n"
-            f"Play Count: {track.play_count}"
-        )
+        if isinstance(track, dict):
+            detail = (
+                f"ID: {track.get('track_id', '')}\n"
+                f"Title: {track.get('track_name', track.get('track_title', ''))}\n"
+                f"Artist: {track.get('artist', '')}\n"
+                f"Rating: {track.get('rating', '')}\n"
+                f"Play Count: {track.get('play_count', '')}"
+            )
+        else:
+            detail = (
+                f"ID: {track.track_id}\n"
+                f"Title: {track.track_title}\n"
+                f"Artist: {track.artist}\n"
+                f"Rating: {track.rating}\n"
+                f"Play Count: {track.play_count}"
+            )
         self.view.display_detail(detail)

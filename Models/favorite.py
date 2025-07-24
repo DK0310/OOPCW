@@ -12,3 +12,6 @@ class Favorite:
 
     def get_favorite_track(self):
         return self.favorite_tracks
+
+    def clear_all_favorites(self):
+        self.favorite_tracks = []

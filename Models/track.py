@@ -13,11 +13,3 @@ class Track:
 
     def set_rating(self, rating):
         self.track_rating = rating
-
-    @staticmethod
-    def get_default_tracks():
-        return [
-            Track(1, "Imagine", "John Lennon", 5),
-            Track(2, "Bohemian Rhapsody", "Queen", 4.8),
-            Track(3, "Billie Jean", "Michael Jackson", 4.7),
-        ]

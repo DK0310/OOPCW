@@ -54,3 +54,10 @@ class TrackListController:
         self.view.tracks_listbox.delete(0, 'end')
         for track in playlist.get_tracks():
             self.view.tracks_listbox.insert('end', f"{track.track_id}. {track.track_title} - {track.artist}")
+
+    def clear_all_playlists(self):
+        from Models.track_list import TrackList
+        TrackList.clear_all_playlists()
+        self.update_playlist_listbox()
+        self.view.tracks_listbox.delete(0, 'end')
+        self.view.show_message("All playlists have been cleared!")

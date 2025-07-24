@@ -20,6 +20,8 @@ class TrackListView:
         self.create_playlist_btn.pack(side=tk.LEFT, padx=(0, 10))
         self.add_track_btn = tk.Button(self.button_frame, text="Add Track")
         self.add_track_btn.pack(side=tk.LEFT)
+        self.clear_playlists_btn = tk.Button(self.button_frame, text="Clear Playlists")
+        self.clear_playlists_btn.pack(side=tk.LEFT, padx=(10, 0))
 
         # Khung hiển thị các track trong playlist được chọn
         self.tracks_label = tk.Label(self.frame, text="Tracks in Playlist", bg="#0A0F2C", fg="white")

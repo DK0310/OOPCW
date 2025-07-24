@@ -17,6 +17,7 @@ from Controllers.favorite_controller import FavoriteController
 from Controllers.musicplayer_controller import MusicPlayerController
 
 import font_manager as fonts
+from database.track_db import get_all_tracks
 
 class JukeboxApp:
     def __init__(self, root):
@@ -41,11 +42,11 @@ class JukeboxApp:
         self.notebook.add(self.favorite_frame, text="Favorite")
         self.notebook.add(self.musicplayer_frame, text="Music Player")
 
-        # Models and default data
-        self.default_tracks = Track.get_default_tracks()
-        self.track_list = TrackList(1, "My Playlist", self.default_tracks.copy())
+        # Lấy dữ liệu track từ database
+        self.default_tracks = get_all_tracks()
+        self.track_list = None    # Sẽ load từ DB sau
         self.favorite = Favorite()
-        self.musicplayer = MusicPlayer(self.default_tracks)
+        self.musicplayer = None  # Sẽ load từ DB sau
 
         # Views
         self.track_view = TrackView(self.view_frame)
@@ -54,7 +55,7 @@ class JukeboxApp:
         self.musicplayer_view = MusicPlayerView(self.musicplayer_frame)
 
         # Controllers
-        self.track_controller = TrackController(self.default_tracks[0], self.track_view)
+        self.track_controller = TrackController(None, self.track_view)
         self.track_list_controller = TrackListController(self.track_list, self.track_list_view)
         self.favorite_controller = FavoriteController(self.favorite, self.favorite_view)
         self.musicplayer_controller = MusicPlayerController(self.musicplayer, self.musicplayer_view)
@@ -66,25 +67,35 @@ class JukeboxApp:
         self.musicplayer_view.get_frame().pack(fill="both", expand=True)
 
         # Bind buttons in track view
-        self.track_view.btn_show.config(command=self.display_tracks)
         self.track_view.btn_detail.config(command=self.show_selected_detail)
-        self.track_view.btn_add_fav.config(command=lambda: self.track_controller.add_to_favorite(self.track_list.get_tracks()[self.track_view.get_listbox().curselection()[0]]))
+        self.track_view.btn_add_fav.config(command=self.add_to_favorite_callback)
 
         # Bind button in playlist view
         self.track_list_view.create_playlist_btn.config(command=self.create_playlist_callback)
         self.track_list_view.add_track_btn.config(command=self.add_track_popup_callback)
         self.track_list_view.playlist_listbox.bind('<<ListboxSelect>>', self.on_playlist_select)
+        self.track_list_view.clear_playlists_btn.config(command=self.clear_playlists_callback)
+
+        # Bind buttons in favorite view
+        self.favorite_view.clear_track_btn.config(command=self.clear_selected_favorite_callback)
+        self.favorite_view.clear_all_btn.config(command=self.clear_all_favorites_callback)
+        self.favorite_controller.display_favorites()
+
+        # Hiển thị track ngay khi khởi động
+        self.display_tracks()
 
     def display_tracks(self):
         self.track_view.get_listbox().delete(0, tk.END)
-        for track in self.track_list.get_tracks():
-            self.track_view.get_listbox().insert(tk.END, f"{track.track_id}. {track.track_title} - {track.artist}")
+        for track in self.default_tracks:
+            self.track_view.get_listbox().insert(
+                tk.END, f"{track['track_id']}. {track['track_name']} - {track['artist']} (Rating: {track['rating']})"
+            )
 
     def show_selected_detail(self):
         selected_index = self.track_view.get_listbox().curselection()
         if selected_index:
             index = selected_index[0]
-            selected_track = self.track_list.get_tracks()[index]
+            selected_track = self.default_tracks[index]
             self.track_controller.show_detail(selected_track)
         else:
             self.track_view.show_message("Please select a track first.")
@@ -118,6 +129,29 @@ class JukeboxApp:
             self.track_list_controller.update_tracks_listbox(playlist)
         else:
             self.track_list_view.tracks_listbox.delete(0, 'end')
+
+    def clear_playlists_callback(self):
+        self.track_list_controller.clear_all_playlists()
+
+    def clear_selected_favorite_callback(self):
+        selection = self.favorite_view.get_listbox().curselection()
+        if not selection:
+            self.favorite_view.show_message("Please select a track to remove!")
+            return
+        index = selection[0]
+        self.favorite_controller.clear_selected_favorite(index)
+
+    def clear_all_favorites_callback(self):
+        self.favorite_controller.clear_all_favorites()
+
+    def add_to_favorite_callback(self):
+        selection = self.track_view.get_listbox().curselection()
+        if not selection:
+            self.track_view.show_message("Please select a track to add to favorite!")
+            return
+        index = selection[0]
+        track = self.default_tracks[index]
+        self.favorite_controller.add_to_favorite(track)
 
 if __name__ == "__main__":
     root = tk.Tk()
