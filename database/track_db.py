@@ -11,13 +11,23 @@ DB_CONFIG = {
 def connect():
     return mysql.connector.connect(**DB_CONFIG)
 
-def create_track(track_name, artist, play_count=0, rating=0):
+def create_track(track_name, artist, play_count=0, rating=0, mp3_path=None, image_path=None):
     conn = connect()
     cursor = conn.cursor()
+    mp3_data = None
+    image_data = None
+
+    if mp3_path:
+        with open(mp3_path, "rb") as f: 
+            mp3_data = f.read()
+    if image_path:
+        with open(image_path, "rb") as f:
+            image_data = f.read()
+
     cursor.execute('''
-        INSERT INTO tracks (track_name, artist, play_count, rating)
-        VALUES (%s, %s, %s, %s)
-    ''', (track_name, artist, play_count, rating))
+        INSERT INTO tracks (track_name, artist, play_count, rating, mp3_file, image_file)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    ''', (track_name, artist, play_count, rating, mp3_data, image_data))
     conn.commit()
     conn.close()
 

@@ -65,7 +65,12 @@ class TrackListView:
 
         listbox = tk.Listbox(content_frame, width=40, height=10)
         for track in all_tracks:
-            listbox.insert(tk.END, f"{track.track_id}. {track.track_title} - {track.artist}")
+            listbox.insert(
+                tk.END,
+                f"{track['track_id'] if isinstance(track, dict) else track.track_id}. "
+                f"{track['track_name'] if isinstance(track, dict) else track.track_title} - "
+                f"{track['artist'] if isinstance(track, dict) else track.artist}"
+            )
         listbox.pack(side=tk.LEFT, fill="y")
 
         add_btn = tk.Button(content_frame, text="Add to Playlist", width=18, command=lambda: on_add())

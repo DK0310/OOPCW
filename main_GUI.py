@@ -83,6 +83,7 @@ class JukeboxApp:
 
         # Hiển thị track ngay khi khởi động
         self.display_tracks()
+        self.show_all_playlists()
 
     def display_tracks(self):
         self.track_view.get_listbox().delete(0, tk.END)
@@ -90,6 +91,15 @@ class JukeboxApp:
             self.track_view.get_listbox().insert(
                 tk.END, f"{track['track_id']}. {track['track_name']} - {track['artist']} (Rating: {track['rating']})"
             )
+
+    def show_all_playlists(self):
+        self.track_list_controller.update_playlist_listbox()
+        # Nếu có playlist nào thì tự động hiển thị track của playlist đầu tiên
+        from database.tracklist_db import get_all_tracklists
+        playlists = get_all_tracklists()
+        if playlists:
+            self.track_list_controller.update_tracks_listbox_by_id(playlists[0]['tracklist_id'])
+
 
     def show_selected_detail(self):
         selected_index = self.track_view.get_listbox().curselection()
@@ -122,11 +132,11 @@ class JukeboxApp:
             self.track_list_view.tracks_listbox.delete(0, 'end')
             return
         playlist_index = selection[0]
-        from Models.track_list import TrackList
-        playlists = TrackList.get_all_playlists()
+        from database.tracklist_db import get_all_tracklists
+        playlists = get_all_tracklists()
         if 0 <= playlist_index < len(playlists):
-            playlist = playlists[playlist_index]
-            self.track_list_controller.update_tracks_listbox(playlist)
+            playlist_id = playlists[playlist_index]['tracklist_id']
+            self.track_list_controller.update_tracks_listbox_by_id(playlist_id)
         else:
             self.track_list_view.tracks_listbox.delete(0, 'end')
 
