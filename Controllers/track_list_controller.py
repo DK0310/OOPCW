@@ -2,19 +2,7 @@ class TrackListController:
     def __init__(self, model, view):
         self.model = model
         self.view = view
-    
-    def add_track_to_list(self, track):
-        self.model.add_track(track)
-        self.view.show_message("Track added to playlist")
-
-    def remove_track_from_list(self, track_id):
-        self.model.remove_track(track_id)
-        self.view.show_message(f"Track {track_id} removed from playlist")
-
-    def print_tracks(self):
-        tracks = self.model.get_all_tracks()
-        self.view.display_track_list(tracks)
-
+   
     def clear_playlist(self):
         self.model.clear_playlist()
         self.view.show_message("Playlist cleared")
@@ -47,7 +35,6 @@ class TrackListController:
             add_track_to_tracklist(playlist_id, track['track_id'] if isinstance(track, dict) else track.track_id)
             self.update_tracks_listbox_by_id(playlist_id)
             self.view.show_message(f"Added track: {track['track_name'] if isinstance(track, dict) else track.track_title} to playlist: {playlists[playlist_index]['tracklist_name']}")
-            # Tự động chọn lại playlist vừa thao tác và hiển thị track
             self.view.playlist_listbox.selection_clear(0, 'end')
             self.view.playlist_listbox.selection_set(playlist_index)
             self.view.playlist_listbox.activate(playlist_index)
@@ -61,9 +48,6 @@ class TrackListController:
         for track in tracks:
             self.view.tracks_listbox.insert('end', f"{track['track_id']}. {track['track_name']} - {track['artist']}")
 
-    # Không dùng nữa, đã thay bằng update_tracks_listbox_by_id
-    def update_tracks_listbox(self, playlist):
-        pass
 
     def clear_all_playlists(self):
         from database.tracklist_db import get_all_tracklists, delete_tracklist

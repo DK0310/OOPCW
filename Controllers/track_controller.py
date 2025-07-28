@@ -1,26 +1,43 @@
+from database.track_db import get_track, get_all_tracks
+from database.favorite_db import is_favorite, add_favorite
+from tkinter import messagebox
 class TrackController:
     def __init__(self, model, view):
         self.model = model
         self.view = view
 
-    def new_rating(self, rating):
-        self.model.set_rating(rating)
-        self.view.show_message(f"Rating updated to {rating}")
+    def show_detail(self):
+        selection = self.track_listbox.curselection()
+        if not selection:
+            return
+        idx = selection[0]
+        track_id = self.track_id_map[idx]
+        track = get_track(track_id)
+        if track:
+            rating = track.get('rating', 0)
+            detail = f"Track: {track['track_name']}\nArtist: {track['artist']}\nPlay count: {track['play_count']}\nID: {track['track_id']}\nRating: {track['rating']}"
+            self.display_detail(detail)
+        else:
+            self.display_detail("No track information found.")
 
-    def add_track(self, title, artist):
-        self.model.track_title = title
-        self.model.artist = artist
-        self.view.show_message("Track details updated")
+    def auto_add_favorite(self):
+        tracks = get_all_tracks()
+        for track in tracks:
+            if track.get('play_count', 0) >= 5:
+                if not is_favorite(track['track_id']):
+                    add_favorite(track['track_id'])
+    
+    def add_to_favorite(self):
+        selection = self.track_listbox.curselection()
+        if not selection:
+            messagebox.showerror("Error", "Please select a track!")
+            return
+        idx = selection[0]
+        track_id = self.track_id_map[idx]
+        add_favorite(track_id)
+        messagebox.showinfo("Success", "Track added to favorite!")
 
-    def delete_track(self, track_id):
-        self.view.show_message(f"Track {track_id} deleted (dummy placeholder)")
-
-    def add_to_favorite(self, track_id):
-        self.view.show_message(f"Track {track_id} added to favorites (dummy placeholder)")
-
-    def print_tracks(self):
-        self.view.display_track_info(self.model)
-
+    
     def show_detail(self, track):
         if isinstance(track, dict):
             detail = (

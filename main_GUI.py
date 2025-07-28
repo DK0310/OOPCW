@@ -18,6 +18,9 @@ from Controllers.musicplayer_controller import MusicPlayerController
 
 import font_manager as fonts
 from database.track_db import get_all_tracks
+from database.tracklist_db import get_all_tracklists
+from database.favorite_db import get_all_favorites
+
 
 class JukeboxApp:
     def __init__(self, root):
@@ -44,9 +47,9 @@ class JukeboxApp:
 
         # Lấy dữ liệu track từ database
         self.default_tracks = get_all_tracks()
-        self.track_list = None    # Sẽ load từ DB sau
-        self.favorite = Favorite()
-        self.musicplayer = None  # Sẽ load từ DB sau
+        self.track_list = get_all_tracklists()  
+        self.favorite = Favorite()  
+        self.musicplayer = None  
 
         # Views
         self.track_view = TrackView(self.view_frame)
@@ -79,11 +82,11 @@ class JukeboxApp:
         # Bind buttons in favorite view
         self.favorite_view.clear_track_btn.config(command=self.clear_selected_favorite_callback)
         self.favorite_view.clear_all_btn.config(command=self.clear_all_favorites_callback)
-        self.favorite_controller.display_favorites()
 
         # Hiển thị track ngay khi khởi động
         self.display_tracks()
         self.show_all_playlists()
+        self.display_favorites()
 
     def display_tracks(self):
         self.track_view.get_listbox().delete(0, tk.END)
@@ -92,9 +95,12 @@ class JukeboxApp:
                 tk.END, f"{track['track_id']}. {track['track_name']} - {track['artist']} (Rating: {track['rating']})"
             )
 
+    def display_favorites(self):
+        fav_tracks = get_all_favorites()
+        self.favorite_view.display_favorites(fav_tracks)
+
     def show_all_playlists(self):
         self.track_list_controller.update_playlist_listbox()
-        # Nếu có playlist nào thì tự động hiển thị track của playlist đầu tiên
         from database.tracklist_db import get_all_tracklists
         playlists = get_all_tracklists()
         if playlists:
@@ -122,7 +128,6 @@ class JukeboxApp:
             self.track_list_view.show_message("Please select a playlist first!")
             return
         playlist_index = playlist_index[0]
-        # Lấy danh sách track (ở đây dùng default_tracks, bạn có thể thay bằng lấy từ DB)
         all_tracks = self.default_tracks
         self.track_list_controller.show_add_track_popup(all_tracks, playlist_index)
 
@@ -144,15 +149,16 @@ class JukeboxApp:
         self.track_list_controller.clear_all_playlists()
 
     def clear_selected_favorite_callback(self):
-        selection = self.favorite_view.get_listbox().curselection()
+        selection = self.favorite_view.get_fav_listbox().curselection()
         if not selection:
             self.favorite_view.show_message("Please select a track to remove!")
             return
         index = selection[0]
-        self.favorite_controller.clear_selected_favorite(index)
+        self.favorite_controller.remove_selected_favorite(index)
 
     def clear_all_favorites_callback(self):
         self.favorite_controller.clear_all_favorites()
+        self.display_favorites()
 
     def add_to_favorite_callback(self):
         selection = self.track_view.get_listbox().curselection()

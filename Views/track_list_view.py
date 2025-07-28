@@ -39,12 +39,6 @@ class TrackListView:
         self.add_to_playlist_btn.pack(padx=10, pady=(0, 10))
         self.add_track_frame.pack_forget()  # Ẩn frame này khi chưa cần
 
-    def show_add_track_frame(self):
-        self.add_track_frame.pack(padx=10, pady=10)
-
-    def hide_add_track_frame(self):
-        self.add_track_frame.pack_forget()
-
     def get_frame(self):
         return self.frame
 
@@ -54,7 +48,7 @@ class TrackListView:
     def show_add_track_popup(self, all_tracks, add_callback):
         popup = tk.Toplevel(self.frame)
         popup.title("Add Track to Playlist")
-        popup.geometry("500x300")
+        popup.geometry("700x400")
         popup.configure(bg="#1A1F3C")
 
         label = tk.Label(popup, text="Select a track to add", bg="#1A1F3C", fg="white")
@@ -73,14 +67,13 @@ class TrackListView:
             )
         listbox.pack(side=tk.LEFT, fill="y")
 
-        add_btn = tk.Button(content_frame, text="Add to Playlist", width=18, command=lambda: on_add())
-        add_btn.pack(side=tk.LEFT, padx=(20,0), fill="y")
+        # Thêm nút Add to Playlist vào popup
+        add_btn = tk.Button(
+            popup,
+            text="Add to Playlist",
+            command=lambda: add_callback(all_tracks[listbox.curselection()[0]] if listbox.curselection() else None)
+        )
+        add_btn.pack(pady=(0, 15))
 
-        def on_add():
-            selection = listbox.curselection()
-            if not selection:
-                messagebox.showwarning("Warning", "Please select a track!")
-                return
-            index = selection[0]
-            add_callback(all_tracks[index])
-            popup.destroy()
+
+

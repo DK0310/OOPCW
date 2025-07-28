@@ -1,4 +1,5 @@
 import mysql.connector
+from .track_db import get_track
 
 DB_CONFIG = {
     'user': 'root',
@@ -13,10 +14,18 @@ def connect():
 def add_favorite(track_id):
     conn = connect()
     cursor = conn.cursor()
-    cursor.execute('''
-        INSERT INTO favorites (track_id)
-        VALUES (%s)
-    ''', (track_id,))
+    
+    track = get_track(track_id)
+    if not track:
+        conn.close()
+        return
+    track_name = track['track_name']
+    artist = track['artist']
+    # Thêm vào bảng favorite (nếu chưa có)
+    cursor.execute(
+        "INSERT IGNORE INTO favorites (track_id, track_name, artist) VALUES (%s, %s, %s)",
+        (track_id, track_name, artist)
+    )
     conn.commit()
     conn.close()
 
@@ -24,8 +33,7 @@ def get_all_favorites():
     conn = connect()
     cursor = conn.cursor(dictionary=True)
     cursor.execute('''
-        SELECT t.* FROM tracks t
-        JOIN favorites f ON t.track_id = f.track_id
+        SELECT * FROM favorites
     ''')
     result = cursor.fetchall()
     conn.close()
@@ -44,3 +52,11 @@ def clear_all_favorites():
     cursor.execute('DELETE FROM favorites')
     conn.commit()
     conn.close()
+
+def is_favorite(track_id):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute('SELECT COUNT(*) FROM favorites WHERE track_id = %s', (track_id,))
+    count = cursor.fetchone()[0]
+    conn.close()
+    return count > 0

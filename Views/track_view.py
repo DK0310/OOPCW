@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
-from database.favorite_db import add_favorite
+from database.favorite_db import add_favorite, is_favorite
 from database.track_db import get_all_tracks, get_track, create_track
 
 class TrackView:
@@ -17,7 +17,7 @@ class TrackView:
         self.btn_detail = tk.Button(self.frame, text="Show Detail", state="disabled", command=self.show_detail)
         self.btn_detail.grid(row=0, column=1, padx=10, pady=10)
 
-        self.btn_add_fav = tk.Button(self.frame, text="Add to Favorite", state="disabled")
+        self.btn_add_fav = tk.Button(self.frame, text="Add to Favorite", state="disabled", command=self.add_to_favorite)
         self.btn_add_fav.grid(row=0, column=0, padx=10, pady=10)
 
         # Thêm nút Add Track
@@ -114,14 +114,32 @@ class TrackView:
                 messagebox.showerror("Error", "Track name, artist, and mp3 file are required!")
                 return
 
-            # Gọi hàm tạo track trong database
             create_track(track_name=name, artist=artist, play_count=0, rating=rating, mp3_path=mp3_path, image_path=image_path)
             messagebox.showinfo("Success", "Track added successfully!")
             popup.destroy()
             self.load_tracks()
+        
 
         btn_add = tk.Button(popup, text="Add Track", command=add_track_to_db)
         btn_add.grid(row=5, column=0, columnspan=3, pady=10)
+
+    def add_to_favorite(self):
+        selection = self.track_listbox.curselection()
+        if not selection:
+            messagebox.showerror("Error", "Please select a track!")
+            return
+        idx = selection[0]
+        track_id = self.track_id_map[idx]
+        add_favorite(track_id)
+        messagebox.showinfo("Success", "Track added to favorite!")
+        # Nếu có FavoriteView, gọi hàm load lại favorite ở đây
+
+    def auto_add_favorite(self):
+        tracks = get_all_tracks()
+        for track in tracks:
+            if track.get('play_count', 0) >= 5:
+                if not is_favorite(track['track_id']):
+                    add_favorite(track['track_id'])
 
 
 

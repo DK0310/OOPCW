@@ -21,7 +21,11 @@ class FavoriteView:
     def display_favorites(self, fav_tracks):
         self.fav_listbox.delete(0, tk.END)
         for track in fav_tracks:
-            self.fav_listbox.insert(tk.END, f"{track.track_id}. {track.track_title} - {track.artist}")
+            track_id = track.get('track_id', '')
+            title = track.get('track_name', '')
+            artist = track.get('artist', '')
+            display_text = f"{track_id}. {title} - {artist}"
+            self.fav_listbox.insert(tk.END, display_text)
 
     def show_message(self, msg):
         messagebox.showinfo("Info", msg)
@@ -29,6 +33,7 @@ class FavoriteView:
     def get_frame(self):
         return self.frame
 
-    def get_listbox(self):
+    def get_fav_listbox(self):
         return self.fav_listbox
+
 
