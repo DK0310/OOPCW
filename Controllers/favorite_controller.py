@@ -1,5 +1,4 @@
-from database.favorite_db import add_favorite, remove_favorite, clear_all_favorites, get_all_favorites
-from Models.favorite import Favorite
+from database.favorite_db import remove_favorite, clear_all_favorites, get_all_favorites
 
 class FavoriteController:
     def __init__(self, model, view):
@@ -11,23 +10,16 @@ class FavoriteController:
         for track in get_all_favorites():
             self.view.fav_listbox.insert('end', track['track_name'])
 
-    def add_to_favorite(self, track):
-        self.model.add_favorite(track)
-        track_id = track['track_id'] if isinstance(track, dict) else track.track_id
-        add_favorite(track_id)
-        self.view.display_favorites(self.model.favorite_tracks)
-        self.view.show_message("Track added to favorite!")
-
     def remove_selected_favorite(self, idx):
-        idx = self.view.get_fav_listbox().curselection()
-        if not idx:
-            self.view.show_message("Please select a track to remove!")
+        fav_tracks = get_all_favorites()
+        if not fav_tracks or idx < 0 or idx >= len(fav_tracks):
+            self.view.show_message("Please select a valid track to remove!")
             return
-        track = self.model.favorite_tracks[idx[0]]
-        self.model.remove_favorite(track)
+        track = fav_tracks[idx]
         track_id = track['track_id'] if isinstance(track, dict) else track.track_id
         remove_favorite(track_id)
-        self.view.display_favorites(self.model.favorite_tracks)
+        # Cập nhật lại giao diện
+        self.view.display_favorites(get_all_favorites())
         self.view.show_message("Track removed from favorite.")
 
     def clear_all_favorites(self):

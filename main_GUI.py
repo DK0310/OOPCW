@@ -44,10 +44,10 @@ notebook.add(favorite_frame, text="Favorite")
 notebook.add(musicplayer_frame, text="Music Player")
 
 # Lấy dữ liệu track từ database
-default_tracks = get_all_tracks()
+tracks = get_all_tracks()
 track_list = get_all_tracklists()
-favorite = Favorite()
-musicplayer = None
+favorite_model = Favorite()
+musicplayer = MusicPlayer()
 
 # Views
 track_view = TrackView(view_frame)
@@ -56,10 +56,10 @@ favorite_view = FavoriteView(favorite_frame)
 musicplayer_view = MusicPlayerView(musicplayer_frame)
 
 # Controllers
-track_controller = TrackController(None, track_view)
+track_controller = TrackController(None, track_view, favorite_view)
 track_list_controller = TrackListController(track_list, track_list_view)
-favorite_controller = FavoriteController(favorite, favorite_view)
-musicplayer_controller = MusicPlayerController(musicplayer_view, default_tracks)
+favorite_controller = FavoriteController(favorite_model, favorite_view)
+musicplayer_controller = MusicPlayerController(musicplayer, musicplayer_view)
 
 # Layout each view
 track_view.get_frame().pack(fill="both", expand=True)
@@ -69,11 +69,15 @@ musicplayer_view.get_frame().pack(fill="both", expand=True)
 
 # --- Callback functions ---
 def display_tracks():
+    global tracks
+    tracks = get_all_tracks()
     track_view.get_listbox().delete(0, tk.END)
-    for track in default_tracks:
+    track_view.track_id_map = []
+    for track in tracks:
         track_view.get_listbox().insert(
             tk.END, f"{track['track_id']}. {track['track_name']} - {track['artist']} (Rating: {track['rating']})"
         )
+        track_view.track_id_map.append(track['track_id'])
 
 def display_favorites():
     fav_tracks = get_all_favorites()
@@ -90,13 +94,7 @@ def show_all_playlists():
         track_list_controller.update_tracks_listbox_by_id(playlists[0]['tracklist_id'])
 
 def show_selected_detail():
-    selected_index = track_view.get_listbox().curselection()
-    if selected_index:
-        index = selected_index[0]
-        selected_track = default_tracks[index]
-        track_controller.show_detail(selected_track)
-    else:
-        track_view.show_message("Please select a track first.")
+    track_controller.show_detail()
 
 def create_playlist_callback():
     title = track_list_view.playlist_name_entry.get()
@@ -104,12 +102,12 @@ def create_playlist_callback():
     track_list_view.playlist_name_entry.delete(0, 'end')
 
 def add_track_popup_callback():
+    all_tracks = get_all_tracks()
     playlist_index = track_list_view.playlist_listbox.curselection()
     if not playlist_index:
         track_list_view.show_message("Please select a playlist first!")
         return
     playlist_index = playlist_index[0]
-    all_tracks = default_tracks
     track_list_controller.show_add_track_popup(all_tracks, playlist_index)
 
 def on_playlist_select(event):
@@ -141,13 +139,7 @@ def clear_all_favorites_callback():
     display_favorites()
 
 def add_to_favorite_callback():
-    selection = track_view.get_listbox().curselection()
-    if not selection:
-        track_view.show_message("Please select a track to add to favorite!")
-        return
-    index = selection[0]
-    track = default_tracks[index]
-    favorite_controller.add_to_favorite(track)
+    track_controller.add_to_favorite()
 
 # --- Bind buttons ---
 track_view.btn_detail.config(command=show_selected_detail)
