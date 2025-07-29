@@ -1,9 +1,9 @@
 import pygame
+import vlc
 import os
-from pydub import AudioSegment
-import io
-import base64
+import tempfile
 from database.track_db import get_track
+
 
 class MusicPlayer:
     def __init__(self):
@@ -11,32 +11,35 @@ class MusicPlayer:
         self.track_list = []
         if not pygame.mixer.get_init():
             pygame.mixer.init()
-
+        os.add_dll_directory(r"C:\Program Files\VideoLAN\VLC")  
     
     def play_track(self, track):
         self.current_track = track
+        if hasattr(self, 'vlc_player') and self.vlc_player.is_playing():
+            self.vlc_player.stop()
+       
         db_track = get_track(track['track_id'])
         mp3_data = db_track.get('mp3_file', None)
-        mp3_data = base64.b64decode(mp3_data)
         if not mp3_data:
             print("No mp3 data found for this track.")
             return
 
-    
-        mp3_stream = io.BytesIO(mp3_data)
-        audio = AudioSegment.from_file(mp3_stream, format="mp3")
-        wav_stream = io.BytesIO()
-        audio.export(wav_stream, format="wav")
-        wav_stream.seek(0)
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as temp_file:
+           temp_file.write(mp3_data)
+           temp_path = temp_file.name
 
     
-        pygame.mixer.music.load(wav_stream)
-        pygame.mixer.music.set_volume(1.0)
-        pygame.mixer.music.play()
+        self.vlc_player = vlc.MediaPlayer(temp_path)
+        
+        self.vlc_player.play()
 
     def stop_track(self):
-        pygame.mixer.music.stop()
-        self.current_track = None
+        if hasattr(self, 'vlc_player'):
+            self.vlc_player.stop()
+            self.current_track = None
+        else:
+            pass
+        
 
     def get_current_track(self):
         return self.current_track

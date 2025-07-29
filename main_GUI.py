@@ -84,14 +84,26 @@ def display_favorites():
     favorite_view.display_favorites(fav_tracks)
 
 def display_musicplayer():
+    tracks = get_all_tracks()
     musicplayer.set_track_list(tracks)
-    musicplayer_view.set_track_list(tracks) 
+    musicplayer_view.set_track_list(tracks)
+    musicplayer_view.track_listbox.delete(0, tk.END)
+    for track in tracks:
+        musicplayer_view.track_listbox.insert(
+            tk.END, f"{track['track_id']}. {track['track_name']} - {track['artist']}"
+        )
+    
 
 def show_all_playlists():
     track_list_controller.update_playlist_listbox()
     playlists = get_all_tracklists()
+    tracks = get_all_tracks()
     if playlists:
         track_list_controller.update_tracks_listbox_by_id(playlists[0]['tracklist_id'])
+        for track in tracks:
+            track_list_view.all_tracks_listbox.insert(
+                tk.END, f"{track['track_id']}. {track['track_name']} - {track['artist']}"
+            )
 
 def show_selected_detail():
     track_controller.show_detail()
@@ -153,6 +165,9 @@ def play_track_callback():
         musicplayer_view.print("Please select a track to play.")
         return
     idx = selection[0]
+    tracks = get_all_tracks()
+    musicplayer.set_track_list(tracks)
+    
     track = musicplayer.track_list[idx]
     musicplayer_controller.play(track)
 

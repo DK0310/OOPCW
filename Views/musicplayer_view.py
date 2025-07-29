@@ -1,6 +1,6 @@
 import tkinter as tk
 from PIL import Image, ImageTk
-
+from database.track_db import get_track
 
 class MusicPlayerView:
     def __init__(self, parent_frame):
@@ -30,8 +30,6 @@ class MusicPlayerView:
         self.pause_btn = tk.Button(self.controls_frame, text="Pause")
         self.pause_btn.pack(side=tk.LEFT, padx=5, pady=5)
 
-        self.stop_btn = tk.Button(self.controls_frame, text="Stop")
-        self.stop_btn.pack(side=tk.LEFT, padx=5, pady=5)
 
 
     def set_track_list(self, tracks):
@@ -42,9 +40,10 @@ class MusicPlayerView:
             self.track_listbox.insert(tk.END, f"{name} - {artist}")
 
     def show_track_info(self, track):
-        img_path = track['image_path'] if isinstance(track, dict) else track.image_path
+        db_img = get_track(track['track_id']) 
+        img_data = db_img['image_path'] if db_img else None
         try:
-            img = Image.open(img_path)
+            img = Image.open(img_data)
             img = img.resize((200, 200))
             photo = ImageTk.PhotoImage(img)
             self.cover_label.config(image=photo)

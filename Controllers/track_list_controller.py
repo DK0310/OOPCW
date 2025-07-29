@@ -3,10 +3,6 @@ class TrackListController:
         self.model = model
         self.view = view
    
-    def clear_playlist(self):
-        self.model.clear_playlist()
-        self.view.show_message("Playlist cleared")
-
     def create_playlist(self, title):
         if not title.strip():
             self.view.show_message("Playlist name cannot be empty!")
@@ -30,16 +26,19 @@ class TrackListController:
     def add_track_to_selected_playlist(self, track, playlist_index):
         from database.tracklist_db import get_all_tracklists, add_track_to_tracklist
         playlists = get_all_tracklists()
-        if 0 <= playlist_index < len(playlists):
-            playlist_id = playlists[playlist_index]['tracklist_id']
-            add_track_to_tracklist(playlist_id, track['track_id'] if isinstance(track, dict) else track.track_id)
-            self.update_tracks_listbox_by_id(playlist_id)
-            self.view.show_message(f"Added track: {track['track_name'] if isinstance(track, dict) else track.track_title} to playlist: {playlists[playlist_index]['tracklist_name']}")
-            self.view.playlist_listbox.selection_clear(0, 'end')
-            self.view.playlist_listbox.selection_set(playlist_index)
-            self.view.playlist_listbox.activate(playlist_index)
+        if track is None or not playlists:
+            if 0 <= playlist_index < len(playlists):
+                playlist_id = playlists[playlist_index]['tracklist_id']
+                add_track_to_tracklist(playlist_id, track['track_id'] if isinstance(track, dict) else track.track_id)
+                self.update_tracks_listbox_by_id(playlist_id)
+                self.view.show_message(f"Added track: {track['track_name'] if isinstance(track, dict) else track.track_title} to playlist: {playlists[playlist_index]['tracklist_name']}")
+                self.view.playlist_listbox.selection_clear(0, 'end')
+                self.view.playlist_listbox.selection_set(playlist_index)
+                self.view.playlist_listbox.activate(playlist_index)
+            else:
+                self.view.show_message("Invalid playlist selection!")
         else:
-            self.view.show_message("Invalid playlist selection!")
+            self.view.show_message("Duplicate track or invalid selection!")
 
     def update_tracks_listbox_by_id(self, playlist_id):
         from database.tracklist_db import get_tracks_of_tracklist
