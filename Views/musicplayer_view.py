@@ -6,14 +6,12 @@ class MusicPlayerView:
     def __init__(self, parent_frame):
         self.frame = tk.Frame(parent_frame, bg="#1A1F3C")
 
-        # Khung trái: Danh sách track
         self.left_frame = tk.Frame(self.frame, bg="#222")
         self.left_frame.pack(side=tk.LEFT, fill=tk.Y)
 
         self.track_listbox = tk.Listbox(self.left_frame, width=30, height=20)
         self.track_listbox.pack(padx=10, pady=10)
 
-        # Khung phải: Trình phát nhạc
         self.right_frame = tk.Frame(self.frame, bg="#1A1F3C")
         self.right_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
@@ -23,7 +21,6 @@ class MusicPlayerView:
         self.info_label = tk.Label(self.right_frame, text="", font=("Arial", 16), fg="white", bg="#1A1F3C")
         self.info_label.pack(pady=(0, 20))
 
-        # Frame chứa các nút điều khiển, đặt dưới ảnh và info
         self.controls_frame = tk.Frame(self.right_frame, bg="#1A1F3C")
         self.controls_frame.pack(pady=10)
 
@@ -55,10 +52,12 @@ class MusicPlayerView:
         except Exception:
             self.cover_label.config(image="", text="No Image", fg="white")
 
-        # Hiển thị tên track và artist
         name = track['track_name'] if isinstance(track, dict) else track.track_title
         artist = track['artist'] if isinstance(track, dict) else track.artist
         self.info_label.config(text=f"{name}\n{artist}")
 
     def get_frame(self):
         return self.frame
+
+    def print(self, message):
+        print(message)

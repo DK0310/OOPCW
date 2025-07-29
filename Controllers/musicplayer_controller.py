@@ -3,22 +3,19 @@ class MusicPlayerController:
         self.model = model
         self.view = view
 
-    def next_track(self):
-        if self.model.current_index < len(self.model.tracks) - 1:
-            self.model.current_index += 1
-        self.display_current_track()
-
-    def previous_track(self):
-        if self.model.current_index > 0:
-            self.model.current_index -= 1
-        self.display_current_track()
-
-    def back_to_home(self):
-        self.model.current_index = 0
-        self.display_current_track()
-
-    def display_current_track(self):
-        track = self.model.get_current_track()
+    def play(self, track):
+        self.model.play_track(track)
         if track:
-            self.view.print(track.track_title, track.artist, track.track_id)
+            if isinstance(track, dict):
+                title = track.get('track_name', '')
+                artist = track.get('artist', '')
+            else:
+                title = getattr(track, 'track_name', '')
+                artist = getattr(track, 'artist', '')
+            self.view.print(f"Playing: {title} by {artist}")
+        else:
+            self.view.print("No track selected to play.")
 
+    def stop(self):
+        self.model.stop_track()
+        self.view.print("Stopped.")

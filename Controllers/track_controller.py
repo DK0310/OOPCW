@@ -67,4 +67,4 @@ class TrackController:
 
     def load_tracks(self):
         tracks = get_all_tracks()
-        self.view.display_tracks(tracks)
+        self.view.display_detail(tracks)

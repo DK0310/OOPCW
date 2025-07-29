@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
-from database.favorite_db import add_favorite, is_favorite
-from database.track_db import get_all_tracks, get_track, create_track
+from database.favorite_db import add_favorite
+from database.track_db import get_all_tracks, get_track, create_track, update_track
 
 class TrackView:
     def __init__(self, parent_frame):
@@ -108,9 +108,50 @@ class TrackView:
         self.track_id_map = []
         tracks = get_all_tracks()
         for track in tracks:
-            display_text = f"{track['track_name']} - {track['artist']} (Rating: {track.get('rating', 0)})"
+            display_text = f"{track['track_name']} - {track['artist']})"
             self.track_listbox.insert(tk.END, display_text)
             self.track_id_map.append(track['track_id'])
+
+    def show_update_track_popup(self, track, callback):
+        popup = tk.Toplevel(self.frame)
+        popup.title("Update Track")
+
+        tk.Label(popup, text="Track Name:").grid(row=0, column=0, sticky="e")
+        entry_name = tk.Entry(popup)
+        entry_name.insert(0, track.get('track_name', ''))
+        entry_name.grid(row=0, column=1)
+
+        tk.Label(popup, text="Artist:").grid(row=1, column=0, sticky="e")
+        entry_artist = tk.Entry(popup)
+        entry_artist.insert(0, track.get('artist', ''))
+        entry_artist.grid(row=1, column=1)
+
+        tk.Label(popup, text="Rating:").grid(row=2, column=0, sticky="e")
+        entry_rating = tk.Entry(popup)
+        entry_rating.insert(0, str(track.get('rating', 0)))
+        entry_rating.grid(row=2, column=1)
+
+        def update_track_in_db():
+            name = entry_name.get()
+            artist = entry_artist.get()
+            try:
+                rating = float(entry_rating.get())
+            except ValueError:
+                rating = 0
+
+            if not name or not artist:
+                messagebox.showerror("Error", "Track name and artist are required!")
+                return
+
+            update_track(track_id=track['track_id'], track_name=name, artist=artist, rating=rating)
+            
+            self.track_txt.delete("1.0", tk.END)
+            self.track_txt.insert(tk.END, "Track updated successfully!")
+            popup.destroy()
+            callback()
+
+        btn_update = tk.Button(popup, text="Update Track", command=update_track_in_db)
+        btn_update.grid(row=3, column=0, columnspan=2, pady=10)
     
     
 

@@ -5,7 +5,8 @@ DB_CONFIG = {
     'user': 'root',
     'password': '',
     'host': 'localhost',
-    'database': 'jukebox'
+    'database': 'jukebox',
+    'port': 3306,
 }
 
 def connect():
@@ -37,7 +38,11 @@ def get_track(track_id):
     cursor.execute('SELECT * FROM tracks WHERE track_id = %s', (track_id,))
     result = cursor.fetchone()
     conn.close()
+    if result and result['mp3_file'] is not None:
+        print("mp3_file type:", type(result['mp3_file']))
+        print("mp3_file size:", len(result['mp3_file']))
     return result
+    
 
 def get_all_tracks():
     conn = connect()
