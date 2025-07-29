@@ -5,7 +5,8 @@ DB_CONFIG = {
     'user': 'root',
     'password': '',
     'host': 'localhost',
-    'database': 'jukebox'
+    'database': 'jukebox',
+    'port': 3306,
 }
 
 def connect():
@@ -53,10 +54,3 @@ def clear_all_favorites():
     conn.commit()
     conn.close()
 
-def is_favorite(track_id):
-    conn = connect()
-    cursor = conn.cursor()
-    cursor.execute('SELECT COUNT(*) FROM favorites WHERE track_id = %s', (track_id,))
-    count = cursor.fetchone()[0]
-    conn.close()
-    return count > 0

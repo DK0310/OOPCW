@@ -18,7 +18,6 @@ class FavoriteController:
         track = fav_tracks[idx]
         track_id = track['track_id'] if isinstance(track, dict) else track.track_id
         remove_favorite(track_id)
-        # Cập nhật lại giao diện
         self.view.display_favorites(get_all_favorites())
         self.view.show_message("Track removed from favorite.")
 

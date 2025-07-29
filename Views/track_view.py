@@ -102,17 +102,8 @@ class TrackView:
 
         btn_add = tk.Button(popup, text="Add Track", command=add_track_to_db)
         btn_add.grid(row=5, column=0, columnspan=3, pady=10)
-    
-    def load_tracks(self):
-        self.track_listbox.delete(0, tk.END)
-        self.track_id_map = []
-        tracks = get_all_tracks()
-        for track in tracks:
-            display_text = f"{track['track_name']} - {track['artist']})"
-            self.track_listbox.insert(tk.END, display_text)
-            self.track_id_map.append(track['track_id'])
 
-    def show_update_track_popup(self, track, callback):
+    def show_update_track_popup(self, track):
         popup = tk.Toplevel(self.frame)
         popup.title("Update Track")
 
@@ -148,7 +139,7 @@ class TrackView:
             self.track_txt.delete("1.0", tk.END)
             self.track_txt.insert(tk.END, "Track updated successfully!")
             popup.destroy()
-            callback()
+            self.display_detail
 
         btn_update = tk.Button(popup, text="Update Track", command=update_track_in_db)
         btn_update.grid(row=3, column=0, columnspan=2, pady=10)

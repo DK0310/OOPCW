@@ -81,3 +81,10 @@ def delete_track(track_id):
     cursor.execute('DELETE FROM tracks WHERE track_id = %s', (track_id,))
     conn.commit()
     conn.close()
+
+def increase_play_count(track_id):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute('UPDATE tracks SET play_count = play_count + 1 WHERE track_id = %s', (track_id,))
+    conn.commit()
+    conn.close()

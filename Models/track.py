@@ -8,8 +8,4 @@ class Track:
         self.mp3_path = mp3_path
         self.image_path = image_path
 
-    def increment_play_count(self):
-        self.play_count += 1
-
-    def set_rating(self, rating):
-        self.track_rating = rating
+    

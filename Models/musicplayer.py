@@ -2,7 +2,7 @@ import pygame
 import vlc
 import os
 import tempfile
-from database.track_db import get_track
+from database.track_db import get_track, increase_play_count
 
 
 class MusicPlayer:
@@ -17,7 +17,7 @@ class MusicPlayer:
         self.current_track = track
         if hasattr(self, 'vlc_player') and self.vlc_player.is_playing():
             self.vlc_player.stop()
-       
+        increase_play_count(track['track_id'])
         db_track = get_track(track['track_id'])
         mp3_data = db_track.get('mp3_file', None)
         if not mp3_data:
@@ -32,6 +32,7 @@ class MusicPlayer:
         self.vlc_player = vlc.MediaPlayer(temp_path)
         
         self.vlc_player.play()
+    
 
     def stop_track(self):
         if hasattr(self, 'vlc_player'):

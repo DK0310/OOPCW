@@ -75,7 +75,7 @@ def display_tracks():
     track_view.track_id_map = []
     for track in tracks:
         track_view.get_listbox().insert(
-            tk.END, f"{track['track_id']}. {track['track_name']} - {track['artist']})"
+            tk.END, f"{track['track_id']}. {track['track_name']} - {track['artist']}"
         )
         track_view.track_id_map.append(track['track_id'])
 
@@ -112,6 +112,7 @@ def create_playlist_callback():
     title = track_list_view.playlist_name_entry.get()
     track_list_controller.create_playlist(title)
     track_list_view.playlist_name_entry.delete(0, 'end')
+    show_all_playlists()
 
 def add_track_popup_callback():
     all_tracks = get_all_tracks()
@@ -121,6 +122,9 @@ def add_track_popup_callback():
         return
     playlist_index = playlist_index[0]
     track_list_controller.show_add_track_popup(all_tracks, playlist_index)
+    display_tracks()
+    show_all_playlists()
+    display_musicplayer()
 
 def on_playlist_select(event):
     selection = track_list_view.playlist_listbox.curselection()
@@ -152,14 +156,19 @@ def clear_all_favorites_callback():
 
 def add_to_favorite_callback():
     track_controller.add_to_favorite()
+    display_favorites()  
 
 def delete_track_callback():
     track_controller.delete_track()
+    display_tracks()         
+    display_musicplayer()    
+    show_all_playlists()
 
 def update_track_callback():
     track_controller.update_track()
 
 def play_track_callback():
+    track_view.track_txt.delete("1.0", tk.END)
     selection = musicplayer_view.track_listbox.curselection()
     if not selection:
         musicplayer_view.print("Please select a track to play.")
@@ -181,7 +190,7 @@ def update_time_label():
         musicplayer_view.update_time(current, total)
     musicplayer_view.time_label.after(500, update_time_label)
 
-# --- Bind buttons ---
+
 track_view.btn_detail.config(command=show_selected_detail)
 track_view.btn_add_fav.config(command=add_to_favorite_callback)
 track_view.btn_del_track.config(command=delete_track_callback)
@@ -198,7 +207,6 @@ favorite_view.clear_all_btn.config(command=clear_all_favorites_callback)
 musicplayer_view.play_btn.config(command=play_track_callback)
 musicplayer_view.pause_btn.config(command=stop_track_callback)
 
-# --- Hiển thị dữ liệu khi khởi động ---
 display_tracks()
 show_all_playlists()
 display_favorites()
