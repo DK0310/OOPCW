@@ -1,6 +1,3 @@
-from Views.track_view import TrackView
-import tkinter as tk
-
 class MusicPlayerController:
     def __init__(self, model, view):
         self.model = model

@@ -32,7 +32,7 @@ class MusicPlayer:
         self.vlc_player = vlc.MediaPlayer(temp_path)
         
         self.vlc_player.play()
-    
+        
 
     def stop_track(self):
         if hasattr(self, 'vlc_player'):

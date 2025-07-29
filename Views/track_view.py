@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
-from database.favorite_db import add_favorite
-from database.track_db import get_all_tracks, get_track, create_track, update_track
+from database.track_db import create_track, update_track
 
 class TrackView:
     def __init__(self, parent_frame):
@@ -37,6 +36,7 @@ class TrackView:
 
     def get_frame(self):
         return self.frame
+
 
     def get_listbox(self):
         return self.track_listbox
@@ -97,7 +97,7 @@ class TrackView:
             create_track(track_name=name, artist=artist, play_count=0, rating=rating, mp3_path=mp3_path, image_path=image_path)
             messagebox.showinfo("Success", "Track added successfully!")
             popup.destroy()
-            self.load_tracks()
+            
         
 
         btn_add = tk.Button(popup, text="Add Track", command=add_track_to_db)
@@ -139,7 +139,7 @@ class TrackView:
             self.track_txt.delete("1.0", tk.END)
             self.track_txt.insert(tk.END, "Track updated successfully!")
             popup.destroy()
-            self.display_detail
+            
 
         btn_update = tk.Button(popup, text="Update Track", command=update_track_in_db)
         btn_update.grid(row=3, column=0, columnspan=2, pady=10)

@@ -44,7 +44,6 @@ class TrackListController:
             self.view.show_message("Duplicate track or invalid selection!")
 
     def update_tracks_listbox_by_id(self, playlist_id):
-        from database.tracklist_db import get_tracks_of_tracklist
         self.view.tracks_listbox.delete(0, 'end')
         tracks = get_tracks_of_tracklist(playlist_id)
         for track in tracks:
@@ -52,7 +51,6 @@ class TrackListController:
 
 
     def clear_all_playlists(self):
-        from database.tracklist_db import get_all_tracklists, delete_tracklist
         playlists = get_all_tracklists()
         for playlist in playlists:
             delete_tracklist(playlist['tracklist_id'])

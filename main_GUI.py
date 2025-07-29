@@ -43,7 +43,7 @@ notebook.add(playlist_frame, text="Playlist")
 notebook.add(favorite_frame, text="Favorite")
 notebook.add(musicplayer_frame, text="Music Player")
 
-# Lấy dữ liệu track từ database
+
 tracks = get_all_tracks()
 track_list = get_all_tracklists()
 favorite_model = Favorite()
@@ -56,7 +56,7 @@ favorite_view = FavoriteView(favorite_frame)
 musicplayer_view = MusicPlayerView(musicplayer_frame)
 
 # Controllers
-track_controller = TrackController(None, track_view, favorite_view)
+track_controller = TrackController(None, track_view)
 track_list_controller = TrackListController(track_list, track_list_view)
 favorite_controller = FavoriteController(favorite_model, favorite_view)
 musicplayer_controller = MusicPlayerController(musicplayer, musicplayer_view)
@@ -67,7 +67,7 @@ track_list_view.get_frame().pack(fill="both", expand=True)
 favorite_view.get_frame().pack(fill="both", expand=True)
 musicplayer_view.get_frame().pack(fill="both", expand=True)
 
-# --- Callback functions ---
+
 def display_tracks():
     global tracks
     tracks = get_all_tracks()
@@ -80,8 +80,8 @@ def display_tracks():
         track_view.track_id_map.append(track['track_id'])
 
 def display_favorites():
-    fav_tracks = get_all_favorites()
-    favorite_view.display_favorites(fav_tracks)
+    favorites = get_all_favorites()
+    favorite_view.display_favorites(favorites)
 
 def display_musicplayer():
     tracks = get_all_tracks()
@@ -126,7 +126,7 @@ def add_track_popup_callback():
     show_all_playlists()
     display_musicplayer()
 
-def on_playlist_select(event):
+def playlist_selected_show(event):
     selection = track_list_view.playlist_listbox.curselection()
     if not selection:
         track_list_view.tracks_listbox.delete(0, 'end')
@@ -149,6 +149,7 @@ def clear_selected_favorite_callback():
         return
     index = selection[0]
     favorite_controller.remove_selected_favorite(index)
+    display_favorites() 
 
 def clear_all_favorites_callback():
     favorite_controller.clear_all_favorites()
@@ -198,11 +199,12 @@ track_view.uptrack_btn.config(command=update_track_callback)
 
 track_list_view.create_playlist_btn.config(command=create_playlist_callback)
 track_list_view.add_track_btn.config(command=add_track_popup_callback)
-track_list_view.playlist_listbox.bind('<<ListboxSelect>>', on_playlist_select)
+track_list_view.playlist_listbox.bind('<<ListboxSelect>>', playlist_selected_show)
 track_list_view.clear_playlists_btn.config(command=clear_playlists_callback)
 
 favorite_view.clear_track_btn.config(command=clear_selected_favorite_callback)
 favorite_view.clear_all_btn.config(command=clear_all_favorites_callback)
+
 
 musicplayer_view.play_btn.config(command=play_track_callback)
 musicplayer_view.pause_btn.config(command=stop_track_callback)

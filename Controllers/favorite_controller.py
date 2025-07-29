@@ -5,13 +5,8 @@ class FavoriteController:
         self.model = model
         self.view = view
 
-    def update_favorites_listbox(self):
-        self.view.fav_listbox.delete(0, 'end')
-        for track in get_all_favorites():
-            self.view.fav_listbox.insert('end', track['track_name'])
-
     def remove_selected_favorite(self, idx):
-        fav_tracks = get_all_favorites()
+        fav_tracks = self.model.get_favorite_tracks()
         if not fav_tracks or idx < 0 or idx >= len(fav_tracks):
             self.view.show_message("Please select a valid track to remove!")
             return
@@ -23,7 +18,4 @@ class FavoriteController:
 
     def clear_all_favorites(self):
         clear_all_favorites()
-        self.update_favorites_listbox()
-        self.view.fav_listbox.delete(0, 'end')
-        self.view.display_favorites(self.model.favorite_tracks)
         self.view.show_message("All favorite tracks cleared.")
