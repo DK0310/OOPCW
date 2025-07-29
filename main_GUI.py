@@ -174,6 +174,13 @@ def play_track_callback():
 def stop_track_callback():
     musicplayer_controller.stop()
 
+def update_time_label():
+    if hasattr(musicplayer, 'vlc_player'):
+        current = musicplayer.vlc_player.get_time() or 0
+        total = musicplayer.vlc_player.get_length() or 0
+        musicplayer_view.update_time(current, total)
+    musicplayer_view.time_label.after(500, update_time_label)
+
 # --- Bind buttons ---
 track_view.btn_detail.config(command=show_selected_detail)
 track_view.btn_add_fav.config(command=add_to_favorite_callback)
@@ -196,5 +203,6 @@ display_tracks()
 show_all_playlists()
 display_favorites()
 display_musicplayer()
+update_time_label()
 
 root.mainloop()
