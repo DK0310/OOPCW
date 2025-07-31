@@ -158,6 +158,8 @@ class TrackView:
             update_track(track_id=track['track_id'], track_name=name, artist=artist, rating=rating)
             self.track_txt.delete("1.0", tk.END)
             self.track_txt.insert(tk.END, "Track updated successfully!")
+            self.load_tracks(get_all_tracks())
+            self.display_music()
             popup.destroy()
             
 

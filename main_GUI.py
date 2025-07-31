@@ -167,6 +167,8 @@ def delete_track_callback():
 
 def update_track_callback():
     track_controller.update_track()
+    display_musicplayer()
+    show_all_playlists()
 
 def play_track_callback():
     track_view.track_txt.delete("1.0", tk.END)
