@@ -10,7 +10,9 @@ class TrackListController:
         if not title.strip():
             self.view.show_message("Playlist name cannot be empty!")
             return
-        
+        if title in [playlist['tracklist_name'] for playlist in get_all_tracklists()]:
+            self.view.show_message("Playlist with this name already exists!")
+            return
         create_tracklist(title)
         self.update_playlist_listbox()
         self.view.show_message(f"Created playlist: {title}")

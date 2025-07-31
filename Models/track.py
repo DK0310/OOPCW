@@ -8,4 +8,5 @@ class Track:
         self.mp3_path = mp3_path
         self.image_path = image_path
 
+   
     

@@ -95,9 +95,9 @@ def display_musicplayer():
     
 
 def show_all_playlists():
-    track_list_controller.update_playlist_listbox()
     playlists = get_all_tracklists()
     tracks = get_all_tracks()
+    track_list_controller.update_playlist_listbox()
     if playlists:
         track_list_controller.update_tracks_listbox_by_id(playlists[0]['tracklist_id'])
         for track in tracks:

@@ -1,5 +1,5 @@
 from database.track_db import get_track, delete_track
-from database.favorite_db import add_favorite
+from database.favorite_db import add_favorite, get_all_favorites
 from tkinter import messagebox
 
 
@@ -15,8 +15,14 @@ class TrackController:
             return
         idx = selection[0]
         track_id = self.view.track_id_map[idx]
-        add_favorite(track_id)
-        messagebox.showinfo("Success", "Track added to favorite!")
+        favorite_tracks = get_all_favorites()
+        favorite_id = [t['track_id'] if isinstance(t,dict) else t.track_id for t in favorite_tracks]
+        if track_id in favorite_id:
+            messagebox.showerror("Error", "Track already in favorites!")
+            return
+        else:
+            add_favorite(track_id)
+            messagebox.showinfo("Success", "Track added to favorite!")
         
     def delete_track(self):
         selection = self.view.track_listbox.curselection()

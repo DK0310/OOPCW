@@ -30,13 +30,12 @@ class TrackView:
 
         self.track_id_map = []  
 
-    def display_detail(self, detail):
-        self.track_txt.delete(1.0, tk.END)
-        self.track_txt.insert(tk.END, detail)
-
     def get_frame(self):
         return self.frame
 
+    def display_detail(self, detail):
+        self.track_txt.delete("1.0", tk.END)
+        self.track_txt.insert(tk.END, detail)
 
     def get_listbox(self):
         return self.track_listbox
@@ -86,9 +85,9 @@ class TrackView:
                 rating = float(entry_rating.get())
             except ValueError:
                 rating = 0
-            image_path = entry_image.get()
-            mp3_path = entry_mp3.get()
-            play_count = 0
+                image_path = entry_image.get()
+                mp3_path = entry_mp3.get()
+                play_count = 0
 
             if not name or not artist or not mp3_path:
                 messagebox.showerror("Error", "Track name, artist, and mp3 file are required!")
