@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
-from database.track_db import create_track, update_track
+from database.track_db import create_track, update_track, get_all_tracks
 
 class TrackView:
     def __init__(self, parent_frame):
@@ -49,6 +49,21 @@ class TrackView:
             self.btn_detail.config(state="disabled")
             self.btn_add_fav.config(state="disabled")
 
+    def load_tracks(self, tracks):
+        self.track_listbox.delete(0, tk.END)
+        self.track_id_map = []
+        for track in tracks:
+            if isinstance(track, dict):
+                track_id = track.get('track_id', None)
+                track_name = track.get('track_name', '')
+                artist = track.get('artist', '')
+            else:
+                track_id = getattr(track, 'track_id', None)
+                track_name = getattr(track, 'track_title', '')
+                artist = getattr(track, 'artist', '')
+            if track_id is not None:
+                self.track_listbox.insert(tk.END, f"{track_id}. {track_name} - {artist}")
+                self.track_id_map.append(track_id)
 
     def show_add_track_popup(self):
         popup = tk.Toplevel(self.frame)
@@ -85,17 +100,20 @@ class TrackView:
                 rating = float(entry_rating.get())
             except ValueError:
                 rating = 0
-                image_path = entry_image.get()
-                mp3_path = entry_mp3.get()
-                play_count = 0
+            image_path = entry_image.get()
+            mp3_path = entry_mp3.get()
+            play_count = 0
 
             if not name or not artist or not mp3_path:
                 messagebox.showerror("Error", "Track name, artist, and mp3 file are required!")
                 return
-
+            if rating < 1 or rating > 5:
+                messagebox.showerror("Error", "Track rating must be between 1 and 5.")
+                return
             create_track(track_name=name, artist=artist, play_count=0, rating=rating, mp3_path=mp3_path, image_path=image_path)
             messagebox.showinfo("Success", "Track added successfully!")
             popup.destroy()
+            self.load_tracks(get_all_tracks())  
             
         
 
@@ -132,9 +150,11 @@ class TrackView:
             if not name or not artist:
                 messagebox.showerror("Error", "Track name and artist are required!")
                 return
-
-            update_track(track_id=track['track_id'], track_name=name, artist=artist, rating=rating)
+            if rating < 1 or rating > 5:
+                messagebox.showerror("Error", "Track rating must be between 1 and 5.")
+                return
             
+            update_track(track_id=track['track_id'], track_name=name, artist=artist, rating=rating)
             self.track_txt.delete("1.0", tk.END)
             self.track_txt.insert(tk.END, "Track updated successfully!")
             popup.destroy()

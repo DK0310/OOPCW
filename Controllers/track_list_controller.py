@@ -28,22 +28,26 @@ class TrackListController:
         self.view.show_add_track_popup(all_tracks, add_callback)
 
     def add_track_to_selected_playlist(self, track, playlist_index):
-        playlists = get_all_tracklists()
-        track = get_track(track['track_id']) if isinstance(track, dict) else get_track(track)
-        if track is None or not playlists:
-            self.view.show_message("Invalid track or playlist selection!")
+        if not track:
+            self.view.show_message("Please select a track to add!")
             return
 
-        if 0 <= playlist_index < len(playlists):
-            playlist_id = playlists[playlist_index]['tracklist_id']
-            add_track_to_tracklist(playlist_id, track['track_id'] if isinstance(track, dict) else track.track_id)
-            self.update_tracks_listbox_by_id(playlist_id)
-            self.view.show_message(f"Added track: {track['track_name'] if isinstance(track, dict) else track.track_title} to playlist: {playlists[playlist_index]['tracklist_name']}")
-            self.view.playlist_listbox.selection_clear(0, 'end')
-            self.view.playlist_listbox.selection_set(playlist_index)
-            self.view.playlist_listbox.activate(playlist_index)
-        else:
-            self.view.show_message("Duplicate track or invalid selection!")
+        playlists = get_all_tracklists()
+        if playlist_index < 0 or playlist_index >= len(playlists):
+            self.view.show_message("Invalid playlist selected!")
+            return
+
+        playlist_id = playlists[playlist_index]['tracklist_id']
+        existing_tracks = get_tracks_of_tracklist(playlist_id)
+        track_id = track['track_id'] if isinstance(track, dict) else track.track_id
+        existing_ids = [t['track_id'] if isinstance(t, dict) else t.track_id for t in existing_tracks]
+        if track_id in existing_ids:
+            self.view.show_message("Track already exists in this playlist!")
+            return
+
+        add_track_to_tracklist(playlist_id, track_id)
+        self.view.show_message("Track added to playlist!")
+        self.update_tracks_listbox_by_id(playlist_id)
 
     def update_tracks_listbox_by_id(self, playlist_id):
         self.view.tracks_listbox.delete(0, 'end')
@@ -59,3 +63,4 @@ class TrackListController:
         self.update_playlist_listbox()
         self.view.tracks_listbox.delete(0, 'end')
         self.view.show_message("All playlists have been cleared!")
+

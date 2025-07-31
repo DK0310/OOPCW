@@ -65,7 +65,9 @@ class TrackController:
             )
             self.view.display_detail(detail)
         else:
-            self.view.display_detail("No track information found.")
+            self.view.display_detail("No track information found.")\
+    
+    
         
 
 
