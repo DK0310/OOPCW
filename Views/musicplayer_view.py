@@ -35,7 +35,7 @@ class MusicPlayerView:
         self.time_label = tk.Label(self.right_frame, text="00:00 / 00:00", font=("Arial", 12), fg="white", bg="#1A1F3C")
         self.time_label.pack(pady=(0, 10))
 
-    def on_select_track(self, event):
+    def on_select_track(self, _):
         selection = self.track_listbox.curselection()
         if not selection:
             return
@@ -59,7 +59,7 @@ class MusicPlayerView:
                 img = Image.open(io.BytesIO(img_data))
             else:
                 raise Exception("No image data")
-            img = img.resize((200, 200))
+            img = img.resize((300, 200))
             photo = ImageTk.PhotoImage(img)
             self.cover_label.config(image=photo, text="")
             self.cover_label.image = photo

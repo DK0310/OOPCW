@@ -21,10 +21,10 @@ from database.track_db import get_all_tracks
 from database.tracklist_db import get_all_tracklists
 from database.favorite_db import get_all_favorites
 
-# --- Khởi tạo Tkinter và các biến toàn cục ---
+
 root = tk.Tk()
 root.title("Jukebox Simulation")
-root.geometry("900x650")
+root.geometry("1200x800")
 root.configure(bg="#0A0F2C")
 
 fonts.configure()
@@ -32,7 +32,7 @@ fonts.configure()
 notebook = ttk.Notebook(root)
 notebook.pack(fill='both', expand=True)
 
-# Tabs
+
 view_frame = tk.Frame(notebook, bg="#0A0F2C")
 playlist_frame = tk.Frame(notebook, bg="#0A0F2C")
 favorite_frame = tk.Frame(notebook, bg="#0A0F2C")
@@ -50,7 +50,7 @@ favorite_model = Favorite()
 musicplayer = MusicPlayer()
 
 # Views
-track_view = TrackView(view_frame)
+track_view = TrackView(view_frame, display_music=lambda: display_musicplayer())
 track_list_view = TrackListView(playlist_frame)
 favorite_view = FavoriteView(favorite_frame)
 musicplayer_view = MusicPlayerView(musicplayer_frame)
@@ -126,7 +126,7 @@ def add_track_popup_callback():
     show_all_playlists()
     display_musicplayer()
 
-def playlist_selected_show(event):
+def playlist_selected_show(_):
     selection = track_list_view.playlist_listbox.curselection()
     if not selection:
         track_list_view.tracks_listbox.delete(0, 'end')

@@ -2,9 +2,11 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 from database.track_db import create_track, update_track, get_all_tracks
 
+
 class TrackView:
-    def __init__(self, parent_frame):
+    def __init__(self, parent_frame, display_music=None):
         self.frame = tk.Frame(parent_frame, bg="#0A0F2C")
+        self.display_music = display_music
 
         self.track_listbox = tk.Listbox(self.frame, width=50, height=15)
         self.track_listbox.grid(row=1, column=0, padx=10, pady=10)
@@ -114,8 +116,7 @@ class TrackView:
             messagebox.showinfo("Success", "Track added successfully!")
             popup.destroy()
             self.load_tracks(get_all_tracks())  
-            
-        
+            self.display_music()  
 
         btn_add = tk.Button(popup, text="Add Track", command=add_track_to_db)
         btn_add.grid(row=5, column=0, columnspan=3, pady=10)
