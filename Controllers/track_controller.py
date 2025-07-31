@@ -1,5 +1,6 @@
 from database.track_db import get_track, delete_track
 from database.favorite_db import add_favorite, get_all_favorites
+import tkinter as tk
 from tkinter import messagebox
 
 
@@ -32,6 +33,8 @@ class TrackController:
         idx = selection[0]
         track_id = self.view.track_id_map[idx]
         delete_track(track_id)
+        self.view.track_txt.delete("1.0", tk.END)
+        self.view.track_txt.insert(tk.END, "Track deleted successfully!")
         messagebox.showinfo("Success", "Track deleted successfully!")
 
     def update_track(self):
