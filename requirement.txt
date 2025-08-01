@@ -1,3 +1,4 @@
 mysql-connector-python
 pillow
 python-vlc
+pytest

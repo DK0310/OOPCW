@@ -17,8 +17,12 @@ class MusicPlayer:
         self.current_track = track
         if hasattr(self, 'vlc_player') and self.vlc_player.is_playing():
             self.vlc_player.stop()
-        increase_play_count(track['track_id'])
-        db_track = get_track(track['track_id'])
+        if isinstance(track, dict):
+            increase_play_count(track['track_id'])
+            db_track = get_track(track['track_id'])
+        else:
+            increase_play_count(track.track_id)
+            db_track = get_track(track.track_id)
         mp3_data = db_track.get('mp3_file', None)
         if not mp3_data:
             print("No mp3 data found for this track.")

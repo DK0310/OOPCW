@@ -1,11 +1,13 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
+from .BaseView import BaseView
 from database.track_db import create_track, update_track, get_all_tracks
 
 
-class TrackView:
+class TrackView(BaseView):
     def __init__(self, parent_frame, display_music=None):
-        self.frame = tk.Frame(parent_frame, bg="#0A0F2C")
+        self.base_view = BaseView(parent_frame)
+        super().__init__(parent_frame)
         self.display_music = display_music
 
         self.track_listbox = tk.Listbox(self.frame, width=50, height=15)

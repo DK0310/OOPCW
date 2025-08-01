@@ -1,9 +1,11 @@
 import tkinter as tk
 from tkinter import messagebox
+from .BaseView import BaseView
 
-class TrackListView:
+class TrackListView(BaseView):
     def __init__(self, parent_frame):
-        self.frame = tk.Frame(parent_frame, bg="#0A0F2C")
+        self.base_view = BaseView(parent_frame)
+        super().__init__(parent_frame)
 
         self.playlist_label = tk.Label(self.frame, text="Playlists", bg="#0A0F2C", fg="white")
         self.playlist_label.pack(padx=10, pady=(10, 0), anchor="w")
