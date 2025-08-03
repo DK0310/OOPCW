@@ -6,7 +6,6 @@ from database.track_db import create_track, update_track, get_all_tracks
 
 class TrackView(BaseView):
     def __init__(self, parent_frame, display_music=None):
-        self.base_view = BaseView(parent_frame)
         super().__init__(parent_frame)
         self.display_music = display_music
 

@@ -6,10 +6,8 @@ from .BaseView import BaseView
 
 class MusicPlayerView(BaseView):
     def __init__(self, parent_frame):
-        self.base_view = BaseView(parent_frame)
         super().__init__(parent_frame)
         
-
         self.left_frame = tk.Frame(self.frame, bg="#222")
         self.left_frame.pack(side=tk.LEFT, fill=tk.Y)
 

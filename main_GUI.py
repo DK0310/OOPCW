@@ -147,9 +147,15 @@ def clear_selected_favorite_callback():
     if not selection:
         favorite_view.show_message("Please select a track to remove!")
         return
-    index = selection[0]
-    favorite_controller.remove_selected_favorite(index)
-    display_favorites() 
+    idx = selection[0]
+    favorites = get_all_favorites()
+    if idx < 0 or idx >= len(favorites):
+        favorite_view.show_message("Invalid selection!")
+        return
+    track = favorites[idx]
+    track_id = track['track_id'] if isinstance(track, dict) else track.track_id
+    favorite_controller.remove_selected_favorite(track_id)
+    display_favorites()
 
 def clear_all_favorites_callback():
     favorite_controller.clear_all_favorites()

@@ -4,10 +4,8 @@ from .BaseView import BaseView
 
 class FavoriteView(BaseView):
     def __init__(self, parent_frame):
-        self.base_view = BaseView(parent_frame)
         super().__init__(parent_frame)
        
-
         self.status_label = tk.Label(self.frame, text="Favorites", bg="#0A0F2C", fg="white")
         self.status_label.pack(pady=10)
 

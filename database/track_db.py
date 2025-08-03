@@ -1,6 +1,5 @@
 import mysql.connector
 
-# Cấu hình kết nối
 DB_CONFIG = {
     'user': 'root',
     'password': '',

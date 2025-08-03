@@ -22,7 +22,6 @@ def add_favorite(track_id):
         return
     track_name = track['track_name']
     artist = track['artist']
-    # Thêm vào bảng favorite (nếu chưa có)
     cursor.execute(
         "INSERT IGNORE INTO favorites (track_id, track_name, artist) VALUES (%s, %s, %s)",
         (track_id, track_name, artist)

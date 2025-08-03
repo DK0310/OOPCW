@@ -4,7 +4,6 @@ from .BaseView import BaseView
 
 class TrackListView(BaseView):
     def __init__(self, parent_frame):
-        self.base_view = BaseView(parent_frame)
         super().__init__(parent_frame)
 
         self.playlist_label = tk.Label(self.frame, text="Playlists", bg="#0A0F2C", fg="white")
