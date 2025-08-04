@@ -2,6 +2,11 @@
 # Python version
 Recommend download python 3.12.3
 
+## Cloning Repo
+To clone this repo, use this scripts:
+```
+git clone https://github.com/DK0310/OOPCW
+```
 ## Setup database
 I use XAMPP mySQL, to install XAMPP go to:
 ```
