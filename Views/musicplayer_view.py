@@ -30,7 +30,7 @@ class MusicPlayerView(BaseView):
         self.play_btn = tk.Button(self.controls_frame, text="Play")
         self.play_btn.pack(side=tk.LEFT, padx=5, pady=5)
 
-        self.pause_btn = tk.Button(self.controls_frame, text="Pause")
+        self.pause_btn = tk.Button(self.controls_frame, text="Stop")
         self.pause_btn.pack(side=tk.LEFT, padx=5, pady=5)
 
         self.time_label = tk.Label(self.right_frame, text="00:00 / 00:00", font=("Arial", 12), fg="white", bg="#1A1F3C")
