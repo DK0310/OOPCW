@@ -63,6 +63,8 @@ To run, please enter this script
 python main_GUI.py
 ```
 
+## OOP Use case Diagram
+![Usecase Diagram](usecase.png)
 
 
 
