@@ -66,6 +66,8 @@ python main_GUI.py
 ## OOP Use case Diagram
 ![Usecase Diagram](usecase.png)
 
+## OOP class Diagram
 
+![Class Diagram](classDiagram.png)
 
 
