@@ -1,73 +1,186 @@
-# Outline
-# Python version
-Recommend download python 3.12.3
+# 🎵 JukeBox Simulation
 
-## Cloning Repo
-To clone this repo, use this scripts:
+A desktop music player application built with Python, following the **MVC (Model-View-Controller)** architecture. It allows users to manage tracks, create playlists, add favorites, and play music — all through a clean Tkinter GUI.
+
+---
+
+## 📋 Table of Contents
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Installation & Setup](#installation--setup)
+- [Running the App](#running-the-app)
+- [Running Tests](#running-tests)
+- [Diagrams](#diagrams)
+- [Personal Achievement](#personal-achievement)
+
+---
+
+## ✨ Features
+
+- **Track Management** — Add, update, delete, and view music tracks with cover art
+- **Playlist Management** — Create playlists and add tracks to them
+- **Favorites** — Mark tracks as favorites and manage them
+- **Music Player** — Play and stop MP3 tracks using VLC with a real-time progress bar
+- **Persistent Storage** — All data stored in a MySQL database (XAMPP)
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer      | Technology                     |
+|------------|-------------------------------|
+| Language   | Python 3.12                   |
+| GUI        | Tkinter                        |
+| Database   | MySQL (via XAMPP)             |
+| ORM        | mysql-connector-python         |
+| Audio      | python-vlc, pygame             |
+| Images     | Pillow (PIL)                  |
+| Testing    | unittest / pytest              |
+
+---
+
+## 📁 Project Structure
+
 ```
+JukeBox/
+├── Controllers/
+│   ├── favorite_controller.py      # Handles favorite track logic
+│   ├── musicplayer_controller.py   # Handles play/stop actions
+│   ├── track_controller.py         # Handles CRUD for tracks
+│   └── track_list_controller.py    # Handles playlist management
+│
+├── Models/
+│   ├── favorite.py                 # Favorite data model
+│   ├── musicplayer.py              # Music playback model (VLC)
+│   ├── track.py                    # Track data model
+│   └── track_list.py              # TrackList data model
+│
+├── Views/
+│   ├── BaseView.py                 # Abstract base view (Tkinter)
+│   ├── favorite_view.py            # Favorites tab UI
+│   ├── musicplayer_view.py         # Music player tab UI
+│   ├── track_list_view.py          # Playlist tab UI
+│   └── track_view.py              # Track management tab UI
+│
+├── database/
+│   ├── favorite_db.py             # Favorites DB operations
+│   ├── track_db.py                # Tracks DB operations
+│   └── tracklist_db.py            # Tracklist DB operations
+│
+├── db.sql                          # SQL schema for MySQL
+├── main_GUI.py                     # Application entry point
+├── font_manager.py                 # Font configuration
+├── JukeBox_test.py                # Unit tests
+└── requirement.txt                # Python dependencies
+```
+
+---
+
+## ✅ Prerequisites
+
+- **Python 3.12** — [Download](https://www.python.org/downloads/)
+- **XAMPP** (MySQL) — [Download](https://www.apachefriends.org/download.html)
+- **VLC Media Player** — [Download](https://www.videolan.org/vlc/)
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1. Clone the Repository
+
+```bash
 git clone https://github.com/DK0310/OOPCW
-```
-## Setup database
-I use XAMPP mySQL, to install XAMPP go to:
-```
-https://www.apachefriends.org/download.html
-```
-Then run the XAMPP control panel, start the Apache and MySQL module. After that, press the admin button on MySQL, it should directed to PHPAdmin local host server. Then create a database named "jukebox", if you don't named it jukebox, it will cause an error. Finally, insert sql code which I put it in the db.sql file to jukebox database.
-## Setup venv
-```
-python3.12 -m venv venv 
-```
-Or
-
-```
-py -3.12 -m venv venv
-```
-## Activate venv 
-```
-venv/scripts/activate
-```
-
-## Move into OOPCW directory
-```
 cd OOPCW
 ```
 
-## Install essential packages
-```
-pip install requirement.txt
+### 2. Set Up the Database
+
+1. Start **XAMPP** and launch **Apache** and **MySQL** modules
+2. Open **phpMyAdmin** at `http://localhost/phpmyadmin`
+3. Create a new database named exactly **`jukebox`**
+4. Import the schema by running the contents of `db.sql` into the `jukebox` database
+
+### 3. Create and Activate a Virtual Environment
+
+```bash
+# Create virtual environment with Python 3.12
+python3.12 -m venv venv
+
+# Activate (Windows)
+venv\Scripts\activate
+
+# Activate (macOS/Linux)
+source venv/bin/activate
 ```
 
+### 4. Install Dependencies
 
-## Install VLC
-Go to this website and download vlc player:
+```bash
+pip install -r requirement.txt
 ```
-https://www.videolan.org/vlc/
+
+### 5. Configure VLC Path
+
+Open `Models/musicplayer.py` and update line 14 with your VLC installation path:
+
+```python
+# Example — update this to match your VLC install location
+os.add_dll_directory(r"C:\Program Files\VideoLAN\VLC")
 ```
-### 
-Then install VLC (recommend C drive). After finish download, locate where you install VLC. For instance:
-```
-C:\Program Files\VideoLAN\VLC
-```
-Or you just need to located the folder where the file " libvlc.dll " is in. Then paste the path to musicplayer.py in line 14 
-### For Example
-```
-os.add_dll_directory(r"C:\Program Files\VideoLAN\VLC")  
-```
-Or
-```
-os.add_dll_directory(r"paste the path where the file "libvlc.dll" is located")  
-```
-## Run the simulation
-To run, please enter this script
-```
+
+> **Tip:** Look for the folder containing `libvlc.dll` — that's the path to use.
+
+---
+
+## ▶️ Running the App
+
+```bash
 python main_GUI.py
 ```
 
-## OOP Use case Diagram
-![Usecase Diagram](usecase.png)
+---
 
-## OOP class Diagram
+## 🧪 Running Tests
+
+```bash
+python -m pytest JukeBox_test.py -v
+```
+
+The test suite covers:
+
+- Track creation and attribute updates
+- Playlist track addition and clearing
+- Favorite track management
+- Music player play/stop behavior
+
+---
+
+## 📊 Diagrams
+
+### Use Case Diagram
+
+
+![Use Case Diagram](usecase.png)
+
+---
+
+### Class Diagram
+
 
 ![Class Diagram](classDiagram.png)
 
+---
 
+## 🏆 Personal Achievement
+
+
+![Personal Achievement](achievement.png)
+
+---
+
+## 📄 License
+
+This project was created for academic purposes as part of an Object-Oriented Programming coursework.
