@@ -177,10 +177,21 @@ The test suite covers:
 ## 🏆 Personal Achievement
 
 
-![Personal Achievement](achievement.png)
+![Personal Achievement](FirstPrizeOOP.jpg)
 
 ---
 
+- The Best Student of the Subject Object-Oriented Programming
+- Hit the score of 85/100 (UK Criteria)
+
 ## 📄 License
 
-This project was created for academic purposes as part of an Object-Oriented Programming coursework.
+This project was created for academic purposes as part of an Object-Oriented Programming University coursework.
+
+## 👤 Author
+| | |
+|---|---|
+| **GitHub** | [@DK0310](https://github.com/DK0310) |
+| **Project** | Object-Oriented Programming Coursework |
+
+---
